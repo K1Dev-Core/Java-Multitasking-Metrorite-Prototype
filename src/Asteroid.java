@@ -82,17 +82,17 @@ public class Asteroid implements Runnable {
                 dx = (int)(-dx * Config.BOUNCE_MULTIPLIER);
                 x = 0;
             }
-            if (x >= Config.WINDOW_WIDTH - Config.ASTEROID_SIZE - 1) {
+            if (x >= Config.WINDOW_WIDTH - Config.ASTEROID_SIZE - 5) {
                 dx = (int)(-dx * Config.BOUNCE_MULTIPLIER);
-                x = Config.WINDOW_WIDTH - Config.ASTEROID_SIZE - 1;
+                x = Config.WINDOW_WIDTH - Config.ASTEROID_SIZE - 5;
             }
             if (y <= 0) {
                 dy = (int)(-dy * Config.BOUNCE_MULTIPLIER);
                 y = 0;
             }
-            if (y >= Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE) {
+            if (y >= Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 5) {
                 dy = (int)(-dy * Config.BOUNCE_MULTIPLIER);
-                y = Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE;
+                y = Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 5;
             }
             
             label.setLocation(x, y);
@@ -108,7 +108,7 @@ public class Asteroid implements Runnable {
     }
     
     private void checkCollision() {
-        if (x < -10 || x > Config.WINDOW_WIDTH + 10 || y < -10 || y > Config.WINDOW_HEIGHT + 10) {
+        if (x < -50 || x > Config.WINDOW_WIDTH + 50 || y < -50 || y > Config.WINDOW_HEIGHT + 50) {
             explode();
             return;
         }
