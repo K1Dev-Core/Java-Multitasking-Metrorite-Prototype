@@ -121,9 +121,6 @@ public class GameWindow {
         return info;
     }
 
-    public JLabel getDebugLabel() {
-        return debug;
-    }
 
     public boolean isDebugMode() {
         return debugMode;

@@ -88,21 +88,7 @@ public class Asteroid implements Runnable {
         return alive;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public JLabel getDebugLabel() {
-        return debug;
-    }
 
     public void updateDebugInfo(boolean debugMode) {
         if (debugMode) {

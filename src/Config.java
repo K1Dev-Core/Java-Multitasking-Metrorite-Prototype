@@ -14,6 +14,6 @@ public class Config {
 
     public static int MAX_SPEED = 3; // ความเร็วสูงสุด
     public static double BOUNCE_MULTIPLIER = 1;
-    public static int COLLISION_DISTANCE = 62;
+    public static int COLLISION_DISTANCE = 50;
     public static int BOUNCE_RANDOM_RANGE = 1;
 }

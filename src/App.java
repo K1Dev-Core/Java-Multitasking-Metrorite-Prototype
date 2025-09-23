@@ -25,9 +25,7 @@ public class App {
         autoSpawn = !autoSpawn;
     }
 
-    public static boolean isAutoSpawnEnabled() {
-        return autoSpawn;
-    }
+
 
     static void start(JPanel panel, JLabel label, GameWindow window) {
         App.panel = panel;
@@ -40,8 +38,8 @@ public class App {
             int x = r.nextInt(Config.WINDOW_WIDTH - Config.ASTEROID_SIZE - 200) + 100;
             int y = r.nextInt(Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 200) + 100;
 
-            int dx = r.nextInt(8) - 4;
-            int dy = r.nextInt(8) - 4;
+            int dx = r.nextInt(7) - 3;
+            int dy = r.nextInt(7) - 3;
 
             if (dx == 0)
                 dx = 1;
@@ -65,8 +63,8 @@ public class App {
         int x = r.nextInt(Config.WINDOW_WIDTH - Config.ASTEROID_SIZE - 200) + 100;
         int y = r.nextInt(Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 200) + 100;
         
-        int dx = r.nextInt(8) - 4;
-        int dy = r.nextInt(8) - 4;
+        int dx = r.nextInt(10) - 5;
+        int dy = r.nextInt(10) - 5;
         
         if (dx == 0) dx = 1;
         if (dy == 0) dy = 1;
