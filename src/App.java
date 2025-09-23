@@ -27,8 +27,8 @@ public class App {
         Random r = new Random();
 
         for (int i = 0; i < count; i++) {
-            int x = r.nextInt(Config.WINDOW_WIDTH - Config.ASTEROID_SIZE) + 25;
-            int y = r.nextInt(Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE) + 25;
+            int x = r.nextInt(Config.WINDOW_WIDTH - Config.ASTEROID_SIZE) + 115;
+            int y = r.nextInt(Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE) + 115;
 
             int dx = r.nextInt(8) - 4;
             int dy = r.nextInt(8) - 4;
