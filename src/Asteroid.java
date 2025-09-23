@@ -23,7 +23,7 @@ public class Asteroid implements Runnable {
         this.dy = dy;
         this.parent = parent;
 
-        int img = (id % 9) + 1;
+        int img = (id % 11) + 1;
         String path = "assets/images/" + img + ".gif";
         String bombPath = "assets/images/bomb.gif";
 
@@ -46,7 +46,7 @@ public class Asteroid implements Runnable {
 
         debug = new JLabel();
         debug.setForeground(Color.YELLOW);
-        debug.setFont(new Font("Monospaced", Font.PLAIN, 7));
+        debug.setFont(new Font("Tahoma", Font.PLAIN, 10));
         debug.setOpaque(false);
         debug.setVisible(false);
         this.parent.add(debug);

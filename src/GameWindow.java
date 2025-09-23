@@ -1,10 +1,10 @@
 import java.awt.*;
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 public class GameWindow {
     private JFrame frame;
@@ -18,6 +18,13 @@ public class GameWindow {
         frame = new JFrame("Asteroid Game - Simple");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
+        
+        try {
+            Image cursorImage = ImageIO.read(new File("assets/images/hand_thin_small_point.png"));
+            Cursor customCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImage, new Point(0, 0), "hand");
+            frame.setCursor(customCursor);
+        } catch (IOException e) {
+        }
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
 
@@ -29,6 +36,8 @@ public class GameWindow {
                     debugMode = !debugMode;
                     debug.setVisible(debugMode);
                     updateDebugInfo();
+                } else if (e.getKeyCode() == KeyEvent.VK_A && debugMode) {
+                    App.toggleAutoSpawn();
                 } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     if (credits == null) {
                         credits = new CreditsWindow();
