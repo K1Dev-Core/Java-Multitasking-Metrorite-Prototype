@@ -1,10 +1,7 @@
 import java.awt.*;
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.*;
 
 public class Asteroid implements Runnable {
 
@@ -26,26 +23,19 @@ public class Asteroid implements Runnable {
         this.dy = dy;
         this.parent = parent;
 
-        try {
-            int img = (id % 10) + 1;
-            String path = "assets/images/" + img + ".png";
-            String bombPath = "assets/images/bomb.gif";
+        int img = (id % 6) + 1;
+        String path = "assets/images/" + img + ".gif";
+        String bombPath = "assets/images/bomb.gif";
 
-            Image img1 = ImageIO.read(new File(path));
-            img1 = img1.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-            icon = new ImageIcon(img1);
+        icon = new ImageIcon(path);
+        bomb = new ImageIcon(bombPath);
+    
 
-            Image img2 = ImageIO.read(new File(bombPath));
-            bomb = new ImageIcon(img2);
-
-        } catch (IOException e) {
-            System.out.println("Cannot load image: " + e.getMessage());
-            icon = new ImageIcon();
-            bomb = new ImageIcon();
-        }
 
         this.label = new JLabel(icon);
         this.label.setBounds(x, y, Config.ASTEROID_SIZE, Config.ASTEROID_SIZE);
+        this.label.setHorizontalAlignment(JLabel.CENTER);
+        this.label.setVerticalAlignment(JLabel.CENTER);
 
         this.label.addMouseListener(new MouseAdapter() {
             @Override
@@ -124,6 +114,8 @@ public class Asteroid implements Runnable {
         }
     }
 
+
+
     @Override
     public void run() {
         while (alive) {
@@ -191,15 +183,15 @@ public class Asteroid implements Runnable {
     // ตรวจสอบการชนกันระหว่างอุกกาบาต
     private void checkCollision() {
         for (Asteroid other : App.getAsteroids()) {
-
-            if (other == this || !other.isAlive()) {
+            if (other == this || !other.isAlive() || !this.isAlive()) {
                 continue;
             }
 
-            // คำนวณระยะห่างระหว่างอุกกาบาต
-            double distance = Math.sqrt(Math.pow(x - other.x, 2) + Math.pow(y - other.y, 2));
+            int dx = this.x - other.x;
+            int dy = this.y - other.y;
+            int distanceSquared = dx * dx + dy * dy;
 
-            if (distance < Config.COLLISION_DISTANCE) {
+            if (distanceSquared < Config.COLLISION_DISTANCE * Config.COLLISION_DISTANCE) {
                 if (this.id < other.id) {
                     this.explode();
                 } else {

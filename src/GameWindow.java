@@ -48,7 +48,7 @@ public class GameWindow {
     private void setupUI() {
         Image backgroundImage = null;
         try {
-            backgroundImage = ImageIO.read(new File("assets/background/blue-preview.png"));
+            backgroundImage = ImageIO.read(new File("assets/background/spr_background_space.png"));
         } catch (IOException e) {
             System.out.println("Cannot load background image: " + e.getMessage());
         }

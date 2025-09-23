@@ -13,6 +13,7 @@ public class CreditsWindow {
         frame.setSize(500, 400);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
+        frame.setUndecorated(true);
 
         setupCreditsUI();
     }
