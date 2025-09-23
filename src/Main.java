@@ -9,6 +9,7 @@ public class Main {
         try {
             asteroidCount = Integer.parseInt(input);
             if (asteroidCount < Config.MIN_ASTEROIDS)
+
                 asteroidCount = Config.MIN_ASTEROIDS;
         } catch (NumberFormatException e) {
             asteroidCount = Config.DEFAULT_ASTEROIDS;
