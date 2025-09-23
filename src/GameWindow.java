@@ -15,7 +15,7 @@ public class GameWindow {
     private CreditsWindow credits;
 
     public GameWindow() {
-        frame = new JFrame("Asteroid Game - Simple");
+        frame = new JFrame("Asteroid Game ");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
         
@@ -103,7 +103,7 @@ public class GameWindow {
 
         debug = new JLabel("", JLabel.LEFT);
         debug.setForeground(Color.YELLOW);
-        debug.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        debug.setFont(new Font("Tahoma", Font.PLAIN, 12));
         debug.setOpaque(false);
         debug.setBounds(10, 50, 400, 200);
         debug.setVisible(false);
