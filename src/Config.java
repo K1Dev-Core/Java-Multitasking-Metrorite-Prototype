@@ -6,7 +6,7 @@ public class Config {
 
     public static int ASTEROID_SIZE = 64;
     public static int BOMB_SIZE = ASTEROID_SIZE * 1;
-    public static int BOMB_DURATION = 300; // ระยะเวลาที่ระเบิดแสดง
+    public static int BOMB_DURATION = 200; // ระยะเวลาที่ระเบิดแสดง
     public static int GAME_SPEED =15;
 
     public static int MIN_ASTEROIDS = 1;

@@ -9,6 +9,7 @@ public class Asteroid implements Runnable {
     private int x, y;
     private int dx, dy;
     private boolean alive = true;
+    private boolean exploded = false;
     private JLabel label;
     private JPanel parent;
     private ImageIcon icon;
@@ -53,6 +54,9 @@ public class Asteroid implements Runnable {
     }
 
     public void explode() {
+        if (exploded) return;
+        exploded = true;
+        
         if (bomb != null) {
             label.setIcon(bomb);
             int offset = (Config.BOMB_SIZE - Config.ASTEROID_SIZE) / 2;
@@ -104,10 +108,7 @@ public class Asteroid implements Runnable {
 
     @Override
     public void run() {
-        while (alive) {
-            if (!alive)
-                break;
-
+        while (alive && !exploded) {
             // เคลื่อนที่อุกกาบาตตามความเร็ว
             x += dx;
             y += dy;
@@ -169,7 +170,7 @@ public class Asteroid implements Runnable {
     // ตรวจสอบการชนกันระหว่างอุกกาบาต
     private void checkCollision() {
         for (Asteroid other : App.getAsteroids()) {
-            if (other == this || !other.isAlive() || !this.isAlive()) {
+            if (other == this || !other.isAlive() || !this.isAlive() || this.exploded || other.exploded) {
                 continue;
             }
 
