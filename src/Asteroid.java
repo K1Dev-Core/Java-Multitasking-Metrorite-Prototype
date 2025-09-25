@@ -25,7 +25,7 @@ public class Asteroid implements Runnable {
 
         int img = (id % 11) + 1;
         String path = "assets/images/" + img + ".gif";
-        String bombPath = "assets/images/bomb.gif";
+        String bombPath = "assets/images/cLqM0j.gif";
 
         icon = new ImageIcon(path);
         bomb = new ImageIcon(bombPath);

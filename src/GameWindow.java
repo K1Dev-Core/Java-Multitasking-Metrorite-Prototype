@@ -9,7 +9,7 @@ import javax.swing.*;
 public class GameWindow {
     private JFrame frame;
     private JPanel panel;
-    private JLabel info;
+    private AsteroidProgressBar asteroidProgressBar;
     private JLabel debug;
     private boolean debugMode = false;
     private CreditsWindow credits;
@@ -55,11 +55,13 @@ public class GameWindow {
     }
 
     private void setupUI() {
+        ImageIcon backgroundIcon = null;
         Image backgroundImage = null;
         try {
-            backgroundImage = ImageIO.read(new File("assets/background/Background_space.png"));
-        } catch (IOException e) {
-            System.out.println("Cannot load background image: " + e.getMessage());
+            backgroundIcon = new ImageIcon("assets/background/space_scroll_blend_fixed.gif");
+            backgroundImage = backgroundIcon.getImage();
+        } catch (Exception e) {
+            System.out.println("Cannot load background GIF: " + e.getMessage());
         }
 
         final Image finalBackgroundImage = backgroundImage;
@@ -94,12 +96,9 @@ public class GameWindow {
         panel.setOpaque(false);
         mainPanel.add(panel, BorderLayout.CENTER);
 
-        info = new JLabel("Asteroids: 0", JLabel.LEFT);
-        info.setForeground(Color.WHITE);
-        info.setFont(new Font("Tahoma", Font.BOLD, 16));
-        info.setOpaque(false);
-        info.setBounds(10, 10, 200, 30);
-        panel.add(info);
+        asteroidProgressBar = new AsteroidProgressBar();
+        asteroidProgressBar.setBounds(10, 10, 300, 50);
+        panel.add(asteroidProgressBar);
 
         debug = new JLabel("", JLabel.LEFT);
         debug.setForeground(Color.YELLOW);
@@ -117,8 +116,8 @@ public class GameWindow {
         return panel;
     }
 
-    public JLabel getInfoLabel() {
-        return info;
+    public AsteroidProgressBar getAsteroidProgressBar() {
+        return asteroidProgressBar;
     }
 
 

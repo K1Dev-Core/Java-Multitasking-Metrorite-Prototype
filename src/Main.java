@@ -17,7 +17,7 @@ public class Main {
 
         GameWindow gameWindow = new GameWindow();
         App.setAsteroidCount(asteroidCount);
-        App.start(gameWindow.getAsteroidPanel(), gameWindow.getInfoLabel(), gameWindow);
+        App.start(gameWindow.getAsteroidPanel(), gameWindow.getAsteroidProgressBar(), gameWindow);
         SoundManager.playBackground();
     }
 }

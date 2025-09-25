@@ -6,7 +6,7 @@ import javax.swing.*;
 public class App {
     private static final List<Asteroid> asteroids = new CopyOnWriteArrayList<>();
     private static JPanel panel;
-    private static JLabel info;
+    private static AsteroidProgressBar asteroidProgressBar;
     private static int count = Config.DEFAULT_ASTEROIDS;
     private static Thread gameThread;
     private static GameWindow window;
@@ -27,10 +27,12 @@ public class App {
 
 
 
-    static void start(JPanel panel, JLabel label, GameWindow window) {
+    static void start(JPanel panel, AsteroidProgressBar asteroidProgressBar, GameWindow window) {
         App.panel = panel;
-        App.info = label;
+        App.asteroidProgressBar = asteroidProgressBar;
         App.window = window;
+        
+        asteroidProgressBar.setMaxAsteroids(count);
 
         Random r = new Random();
 
@@ -83,7 +85,7 @@ public class App {
             while (true) {
                 try {
                     SwingUtilities.invokeLater(() -> {
-                        info.setText("Asteroids: " + asteroids.size());
+                        asteroidProgressBar.setAsteroidCount(asteroids.size());
                         asteroids.removeIf(asteroid -> !asteroid.isAlive());
                         if (window != null && window.isDebugMode()) {
                             window.updateDebugInfo();
