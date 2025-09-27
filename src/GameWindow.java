@@ -60,18 +60,7 @@ public class GameWindow {
         };
         mainPanel.setLayout(new BorderLayout());
 
-        panel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                if (finalBackgroundImage != null) {
-                    g.drawImage(finalBackgroundImage, 0, 0, getWidth(), getHeight(), this);
-                } else {
-                    g.setColor(Color.BLACK);
-                    g.fillRect(0, 0, getWidth(), getHeight());
-                }
-            }
-        };
+        panel = new JPanel();
         panel.setLayout(null);
         panel.setOpaque(false);
         panel.setFocusable(true);
