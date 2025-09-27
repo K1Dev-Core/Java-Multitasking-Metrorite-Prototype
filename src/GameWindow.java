@@ -13,6 +13,7 @@ public class GameWindow {
     private JLabel debug;
     private boolean debugMode = false;
     private CreditsWindow credits;
+    private JButton soundToggleButton;
 
     public GameWindow() {
         frame = new JFrame("Asteroid Game ");
@@ -29,27 +30,6 @@ public class GameWindow {
         frame.setLocationRelativeTo(null);
 
         frame.setFocusable(true);
-        frame.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_T) {
-                    debugMode = !debugMode;
-                    debug.setVisible(debugMode);
-                    updateDebugInfo();
-                } else if (e.getKeyCode() == KeyEvent.VK_A && debugMode) {
-                    App.toggleAutoSpawn();
-                } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (credits == null) {
-                        credits = new CreditsWindow();
-                    }
-                    if (credits.isVisible()) {
-                        credits.hide();
-                    } else {
-                        credits.show();
-                    }
-                }
-            }
-        });
 
         setupUI();
     }
@@ -94,6 +74,28 @@ public class GameWindow {
         };
         panel.setLayout(null);
         panel.setOpaque(false);
+        panel.setFocusable(true);
+        panel.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_T) {
+                    debugMode = !debugMode;
+                    debug.setVisible(debugMode);
+                    updateDebugInfo();
+                } else if (e.getKeyCode() == KeyEvent.VK_A && debugMode) {
+                    App.toggleAutoSpawn();
+                } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    if (credits == null) {
+                        credits = new CreditsWindow();
+                    }
+                    if (credits.isVisible()) {
+                        credits.hide();
+                    } else {
+                        credits.show();
+                    }
+                }
+            }
+        });
         mainPanel.add(panel, BorderLayout.CENTER);
 
         asteroidProgressBar = new AsteroidProgressBar();
@@ -108,8 +110,23 @@ public class GameWindow {
         debug.setVisible(false);
         panel.add(debug);
 
+        soundToggleButton = new JButton();
+        soundToggleButton.setBounds(Config.WINDOW_WIDTH - 70, 15, 32, 32);
+        soundToggleButton.setOpaque(false);
+        soundToggleButton.setContentAreaFilled(false);
+        soundToggleButton.setBorderPainted(false);
+        soundToggleButton.setFocusPainted(false);
+        updateSoundButtonIcon();
+        soundToggleButton.addActionListener(e -> {
+            SoundManager.toggleSound();
+            updateSoundButtonIcon();
+            panel.requestFocus();
+        });
+        panel.add(soundToggleButton);
+
         frame.add(mainPanel);
         frame.setVisible(true);
+        panel.requestFocus();
     }
 
     public JPanel getAsteroidPanel() {
@@ -139,6 +156,16 @@ public class GameWindow {
         } else {
             debug.setText("");
             debug.setVisible(false);
+        }
+    }
+
+    private void updateSoundButtonIcon() {
+        try {
+            String iconPath = SoundManager.isSoundEnabled() ? 
+                "assets/ui/Music_On.png" : "assets/ui/Music_Off.png";
+            ImageIcon icon = new ImageIcon(iconPath);
+            soundToggleButton.setIcon(icon);
+        } catch (Exception e) {
         }
     }
 }

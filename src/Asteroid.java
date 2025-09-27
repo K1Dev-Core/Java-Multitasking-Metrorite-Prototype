@@ -10,6 +10,7 @@ public class Asteroid implements Runnable {
     private int dx, dy;
     private boolean alive = true;
     private boolean exploded = false;
+    private boolean justBounced = false;
     private JLabel label;
     private JPanel parent;
     private ImageIcon icon;
@@ -47,7 +48,7 @@ public class Asteroid implements Runnable {
 
         debug = new JLabel();
         debug.setForeground(Color.YELLOW);
-        debug.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        debug.setFont(new Font("Tahoma", Font.PLAIN, 7));
         debug.setOpaque(false);
         debug.setVisible(false);
         this.parent.add(debug);
@@ -96,8 +97,9 @@ public class Asteroid implements Runnable {
 
     public void updateDebugInfo(boolean debugMode) {
         if (debugMode) {
-            debug.setText("ID:" + id + " X:" + x + " Y:" + y);
-            debug.setBounds(x - 10, y - 20, 100, 15);
+            double speed = Math.sqrt(dx * dx + dy * dy);
+            debug.setText("ID:" + id + " X:" + x + " Y:" + y + " S:" + String.format("%.1f", speed));
+            debug.setBounds(x - 10, y - 20, 250, 15);
             debug.setVisible(true);
         } else {
             debug.setVisible(false);
@@ -123,34 +125,40 @@ public class Asteroid implements Runnable {
 
             // ชนขอบซ้าย
             if (x <= 0) {
-                dx = (int) (-dx * Config.BOUNCE_MULTIPLIER); // เปลี่ยนทิศทางและคูณความเร็ว
-                dy += (int) ((Math.random() - 0.5) * Config.BOUNCE_RANDOM_RANGE);
-                x = 0; // ตั้งตำแหน่งให้อยู่ที่ขอบ
+                dx = (int)(Math.abs(dx) * Config.BOUNCE_MULTIPLIER);
+                x = 0;
                 SoundManager.playDrip();
+                justBounced = true;
             }
 
             // ชนขอบขวา
             if (x >= Config.WINDOW_WIDTH - Config.ASTEROID_SIZE) {
-                dx = (int) (-dx * Config.BOUNCE_MULTIPLIER); // เปลี่ยนทิศทางและคูณความเร็ว
-                dy += (int) ((Math.random() - 0.5) * Config.BOUNCE_RANDOM_RANGE);
-                x = Config.WINDOW_WIDTH - Config.ASTEROID_SIZE; // ตั้งตำแหน่งให้อยู่ที่ขอบ
+                dx = -(int)(Math.abs(dx) * Config.BOUNCE_MULTIPLIER);
+                x = Config.WINDOW_WIDTH - Config.ASTEROID_SIZE;
                 SoundManager.playDrip();
+                justBounced = true;
             }
 
             // ชนขอบบน
             if (y <= 0) {
-                dy = (int) (-dy * Config.BOUNCE_MULTIPLIER); // เปลี่ยนทิศทางและคูณความเร็ว
-                dx += (int) ((Math.random() - 0.5) * Config.BOUNCE_RANDOM_RANGE);
+                dy = (int)(Math.abs(dy) * Config.BOUNCE_MULTIPLIER);
                 y = 0;
                 SoundManager.playDrip();
+                justBounced = true;
             }
 
             // ชนขอบล่าง
             if (y >= Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 30) {
-                dy = (int) (-dy * Config.BOUNCE_MULTIPLIER); // เปลี่ยนทิศทางและคูณความเร็ว
-                dx += (int) ((Math.random() - 0.5) * Config.BOUNCE_RANDOM_RANGE);
+                dy = -(int)(Math.abs(dy) * Config.BOUNCE_MULTIPLIER);
                 y = Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 30;
                 SoundManager.playDrip();
+                justBounced = true;
+            }
+
+            // รีเซ็ต flag เมื่อไม่อยู่ใกล้ขอบ
+            if (x > 10 && x < Config.WINDOW_WIDTH - Config.ASTEROID_SIZE - 10 && 
+                y > 10 && y < Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 40) {
+                justBounced = false;
             }
 
             label.setLocation(x, y);
@@ -184,6 +192,7 @@ public class Asteroid implements Runnable {
                 } else {
                     other.explode();
                 }
+         
                 break;
             }
         }
