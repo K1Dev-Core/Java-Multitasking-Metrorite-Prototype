@@ -156,7 +156,7 @@ public class Asteroid implements Runnable {
                 justBounced = true;
             }
 
-            // รีเซ็ต flag เมื่อไม่อยู่ใกล้ขอบ
+       
             if (x > 10 && x < Config.WINDOW_WIDTH - Config.ASTEROID_SIZE - 10 && 
                 y > 10 && y < Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 40) {
                 justBounced = false;
