@@ -19,6 +19,7 @@ public class GameWindow {
     private List<ImageIcon> backgroundFrames;
     private int currentFrameIndex = 0;
     private Timer backgroundTimer;
+    private DraggablePlayer draggablePlayer;
 
     public GameWindow() {
         frame = new JFrame("Asteroid Game ");
@@ -121,6 +122,10 @@ public class GameWindow {
         });
         panel.add(soundToggleButton);
 
+        draggablePlayer = new DraggablePlayer();
+        panel.add(draggablePlayer);
+        panel.add(draggablePlayer.getEmoteLabel());
+
         frame.add(mainPanel);
         frame.setVisible(true);
         panel.requestFocus();
@@ -132,6 +137,10 @@ public class GameWindow {
 
     public AsteroidProgressBar getAsteroidProgressBar() {
         return asteroidProgressBar;
+    }
+
+    public DraggablePlayer getDraggablePlayer() {
+        return draggablePlayer;
     }
 
 

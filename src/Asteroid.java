@@ -25,7 +25,7 @@ public class Asteroid implements Runnable {
         this.dy = dy;
         this.parent = parent;
 
-        int img = (id % 11) + 1;
+        int img = (id % 13) + 1;
         String path = "assets/images/" + img + ".gif";
         String bombPath = "assets/images/cLqM0j.gif";
 
@@ -190,12 +190,14 @@ public class Asteroid implements Runnable {
             int distanceSquared = dx * dx + dy * dy;
 
             if (distanceSquared < Config.COLLISION_DISTANCE * Config.COLLISION_DISTANCE) {
-                if (this.id < other.id) {
-                    this.explode();
-                } else {
-                    other.explode();
+               
+                if (!this.exploded && !other.exploded) {
+                    if (Math.random() < 0.5) {
+                        this.explode();
+                    } else {
+                        other.explode();
+                    }
                 }
-         
                 break;
             }
         }
