@@ -58,4 +58,4 @@ def create_seamless_scrolling_gif(image_path, output_path, frame_count=120, spee
 
 # 🚀 ตัวอย่าง: เลื่อนขวา+ขึ้นช้าๆ พร้อมเบลอรอยต่อ
 create_seamless_scrolling_gif("Background_space.png", "space_scroll_blend_fixed.gif",
-                              frame_count=10, speed_x=1, speed_y=-1, duration=80, feather=0.4)
+                              frame_count=60, speed_x=1, speed_y=-1, duration=80, feather=0.4)

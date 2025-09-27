@@ -3,6 +3,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -14,6 +16,9 @@ public class GameWindow {
     private boolean debugMode = false;
     private CreditsWindow credits;
     private JButton soundToggleButton;
+    private List<ImageIcon> backgroundFrames;
+    private int currentFrameIndex = 0;
+    private Timer backgroundTimer;
 
     public GameWindow() {
         frame = new JFrame("Asteroid Game ");
@@ -35,16 +40,16 @@ public class GameWindow {
     }
 
     private void setupUI() {
-        ImageIcon backgroundIcon = null;
-        Image backgroundImage = null;
-        try {
-            backgroundIcon = new ImageIcon("assets/background/frame_006.png");
-            backgroundImage = backgroundIcon.getImage();
-        } catch (Exception e) {
-            System.out.println("Cannot load background image: " + e.getMessage());
+        backgroundFrames = new ArrayList<>();
+        for (int i = 0; i < 60; i++) {
+            String framePath = String.format("assets/background/frame/frame_%03d.png", i);
+            try {
+                ImageIcon frameIcon = new ImageIcon(framePath);
+                backgroundFrames.add(frameIcon);
+            } catch (Exception e) {
+                System.out.println("Cannot load frame: " + framePath);
+            }
         }
-
-        final Image finalBackgroundImage = backgroundImage;
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -75,12 +80,20 @@ public class GameWindow {
             }
         });
         JLabel backgroundLabel = new JLabel();
-        if (backgroundIcon != null) {
-            backgroundLabel.setIcon(backgroundIcon);
+        if (!backgroundFrames.isEmpty()) {
+            backgroundLabel.setIcon(backgroundFrames.get(0));
         }
         backgroundLabel.setLayout(new BorderLayout());
         backgroundLabel.add(panel, BorderLayout.CENTER);
         mainPanel.add(backgroundLabel, BorderLayout.CENTER);
+
+        backgroundTimer = new Timer(80, e -> {
+            if (!backgroundFrames.isEmpty()) {
+                currentFrameIndex = (currentFrameIndex + 1) % backgroundFrames.size();
+                backgroundLabel.setIcon(backgroundFrames.get(currentFrameIndex));
+            }
+        });
+        backgroundTimer.start();
 
         asteroidProgressBar = new AsteroidProgressBar();
         asteroidProgressBar.setBounds(10, 10, 300, 50);
