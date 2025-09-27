@@ -25,7 +25,7 @@ public class Asteroid implements Runnable {
         this.dy = dy;
         this.parent = parent;
 
-        int img = (id % 13) + 1;
+        int img = (int)(Math.random() * 13) + 1;
         String path = "assets/images/" + img + ".gif";
         String bombPath = "assets/images/cLqM0j.gif";
 
