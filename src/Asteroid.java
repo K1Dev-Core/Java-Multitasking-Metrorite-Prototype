@@ -115,14 +115,6 @@ public class Asteroid implements Runnable {
             x += dx;
             y += dy;
 
-            // จำกัดความเร็ว
-            if (Math.abs(dx) > Config.MAX_SPEED) {
-                dx = dx > 0 ? Config.MAX_SPEED : -Config.MAX_SPEED;
-            }
-            if (Math.abs(dy) > Config.MAX_SPEED) {
-                dy = dy > 0 ? Config.MAX_SPEED : -Config.MAX_SPEED;
-            }
-
             // ชนขอบซ้าย
             if (x <= 0) {
                 dx = (int)(Math.abs(dx) * Config.BOUNCE_MULTIPLIER);
