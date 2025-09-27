@@ -75,6 +75,7 @@ public class Asteroid implements Runnable {
                     if (debug != null) {
                         parent.remove(debug);
                     }
+                    parent.revalidate();
                     parent.repaint();
                 });
             } catch (InterruptedException e) {
@@ -161,10 +162,12 @@ public class Asteroid implements Runnable {
                 justBounced = false;
             }
 
-            label.setLocation(x, y);
-            if (debug != null) {
-                debug.setBounds(x - 10, y - 20, 100, 15);
-            }
+            SwingUtilities.invokeLater(() -> {
+                label.setLocation(x, y);
+                if (debug != null) {
+                    debug.setBounds(x - 10, y - 20, 250, 15);
+                }
+            });
             checkCollision();
 
             try {

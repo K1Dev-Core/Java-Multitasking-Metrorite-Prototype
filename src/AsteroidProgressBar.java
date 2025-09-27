@@ -25,7 +25,7 @@ public class AsteroidProgressBar extends JComponent {
         int newCount = Math.max(0, Math.min(maxAsteroids, value));
         if (newCount != asteroidCount) {
             asteroidCount = newCount;
-            repaint();
+            SwingUtilities.invokeLater(this::repaint);
         }
     }
 

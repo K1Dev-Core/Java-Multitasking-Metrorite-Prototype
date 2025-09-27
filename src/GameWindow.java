@@ -38,26 +38,15 @@ public class GameWindow {
         ImageIcon backgroundIcon = null;
         Image backgroundImage = null;
         try {
-            backgroundIcon = new ImageIcon("assets/background/space_scroll_blend_fixed.gif");
+            backgroundIcon = new ImageIcon("assets/background/frame_006.png");
             backgroundImage = backgroundIcon.getImage();
         } catch (Exception e) {
-            System.out.println("Cannot load background GIF: " + e.getMessage());
+            System.out.println("Cannot load background image: " + e.getMessage());
         }
 
         final Image finalBackgroundImage = backgroundImage;
 
-        JPanel mainPanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                if (finalBackgroundImage != null) {
-                    g.drawImage(finalBackgroundImage, 0, 0, getWidth(), getHeight(), this);
-                } else {
-                    g.setColor(Color.BLACK);
-                    g.fillRect(0, 0, getWidth(), getHeight());
-                }
-            }
-        };
+        JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
         panel = new JPanel();
@@ -85,7 +74,13 @@ public class GameWindow {
                 }
             }
         });
-        mainPanel.add(panel, BorderLayout.CENTER);
+        JLabel backgroundLabel = new JLabel();
+        if (backgroundIcon != null) {
+            backgroundLabel.setIcon(backgroundIcon);
+        }
+        backgroundLabel.setLayout(new BorderLayout());
+        backgroundLabel.add(panel, BorderLayout.CENTER);
+        mainPanel.add(backgroundLabel, BorderLayout.CENTER);
 
         asteroidProgressBar = new AsteroidProgressBar();
         asteroidProgressBar.setBounds(10, 10, 300, 50);

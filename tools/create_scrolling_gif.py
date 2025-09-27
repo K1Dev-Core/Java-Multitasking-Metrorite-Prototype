@@ -48,8 +48,14 @@ def create_seamless_scrolling_gif(image_path, output_path, frame_count=120, spee
         disposal=2
     )
     print(f"✅ GIF saved: {output_path}")
+    
+    # บันทึกแต่ละเฟรมเป็น PNG
+    for i, frame in enumerate(frames):
+        frame_path = f"frame_{i:03d}.png"
+        frame.save(frame_path)
+        print(f"📸 Frame {i+1}/{len(frames)} saved: {frame_path}")
 
 
 # 🚀 ตัวอย่าง: เลื่อนขวา+ขึ้นช้าๆ พร้อมเบลอรอยต่อ
 create_seamless_scrolling_gif("Background_space.png", "space_scroll_blend_fixed.gif",
-                              frame_count=180, speed_x=1, speed_y=-1, duration=80, feather=0.2)
+                              frame_count=10, speed_x=1, speed_y=-1, duration=80, feather=0.4)

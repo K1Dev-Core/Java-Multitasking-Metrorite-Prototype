@@ -87,7 +87,7 @@ public class App {
                     SwingUtilities.invokeLater(() -> {
                         asteroidProgressBar.setAsteroidCount(asteroids.size());
                         asteroids.removeIf(asteroid -> !asteroid.isAlive());
-                        if (window != null && window.isDebugMode()) {
+                        if (window != null && window.isDebugMode() && System.currentTimeMillis() % 200 < 50) {
                             window.updateDebugInfo();
                         }
                         
@@ -96,7 +96,7 @@ public class App {
                             lastSpawnTime = System.currentTimeMillis();
                         }
                     });
-                    Thread.sleep(100);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     break;
                 }
