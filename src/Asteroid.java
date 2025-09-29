@@ -72,14 +72,12 @@ public class Asteroid implements Runnable {
         Thread t = new Thread(() -> {
             try {
                 Thread.sleep(Config.BOMB_DURATION);
-                SwingUtilities.invokeLater(() -> {
-                    parent.remove(label);
-                    if (debug != null) {
-                        parent.remove(debug);
-                    }
-                    parent.revalidate();
-                    parent.repaint();
-                });
+                parent.remove(label);
+                if (debug != null) {
+                    parent.remove(debug);
+                }
+                parent.revalidate();
+                parent.repaint();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -152,12 +150,10 @@ public class Asteroid implements Runnable {
                 SoundManager.playDrip();
             }
 
-            SwingUtilities.invokeLater(() -> {
-                label.setLocation(x, y);
-                if (debug != null) {
-                    debug.setBounds(x - 10, y - 20, 250, 15);
-                }
-            });
+            label.setLocation(x, y);
+            if (debug != null) {
+                debug.setBounds(x - 10, y - 20, 250, 15);
+            }
             checkCollision();
 
             try {

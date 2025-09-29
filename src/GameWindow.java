@@ -45,7 +45,7 @@ public class GameWindow {
                     updateDebugInfo();
                 } else if (e.getKeyCode() == KeyEvent.VK_A && debugMode) {
                     App.toggleAutoSpawn();
-                } else if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     if (credits == null) {
                         credits = new CreditsWindow();
                     }
@@ -110,7 +110,7 @@ public class GameWindow {
                     updateDebugInfo();
                 } else if (e.getKeyCode() == KeyEvent.VK_A && debugMode) {
                     App.toggleAutoSpawn();
-                } else if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     if (credits == null) {
                         credits = new CreditsWindow();
                     }
@@ -194,7 +194,7 @@ public class GameWindow {
         }
 
         if (debugMode) {
-            debug.setText("Debug Mode: ON (Press T to toggle)");
+            debug.setText("Debug Mode: ON (Press T to ON-OFF)");
             debug.setLocation(10, 50);
             debug.setVisible(true);
         } else {
@@ -284,7 +284,4 @@ public class GameWindow {
         }
     }
 
-    public boolean isGameRunning() {
-        return gameRunning;
-    }
 }
