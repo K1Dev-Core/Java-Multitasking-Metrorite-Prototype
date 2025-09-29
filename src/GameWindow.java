@@ -2,10 +2,8 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class GameWindow {
@@ -30,24 +28,45 @@ public class GameWindow {
         frame.setUndecorated(true);
         
         try {
-            Image cursorImage = ImageIO.read(new File("assets/images/hand_thin_small_point.png"));
+            Image cursorImage = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + File.separator + "assets" + File.separator + "images" + File.separator + "hand_thin_small_point.png");
             Cursor customCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImage, new Point(0, 0), "hand");
             frame.setCursor(customCursor);
-        } catch (IOException e) {
+        } catch (Exception e) {
         }
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setFocusable(true);
-
+        frame.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_T) {
+                    debugMode = !debugMode;
+                    debug.setVisible(debugMode);
+                    updateDebugInfo();
+                } else if (e.getKeyCode() == KeyEvent.VK_A && debugMode) {
+                    App.toggleAutoSpawn();
+                } else if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                    if (credits == null) {
+                        credits = new CreditsWindow();
+                    }
+                    if (credits.isVisible()) {
+                        credits.hide();
+                    } else {
+                        credits.show();
+                    }
+                }
+            }
+        });
         setupUI();
     }
 
     private void setupUI() {
         backgroundFrames = new ArrayList<>();
         for (int i = 0; i < 60; i++) {
-            String framePath = String.format("assets/background/frame/frame_%03d.png", i);
+            String framePath = System.getProperty("user.dir") + File.separator + "assets" + File.separator + "background" + File.separator + "frame" + File.separator + String.format("frame_%03d.png", i);
             try {
-                ImageIcon frameIcon = new ImageIcon(framePath);
+                Image frameImage = Toolkit.getDefaultToolkit().createImage(framePath);
+                ImageIcon frameIcon = new ImageIcon(frameImage);
                 backgroundFrames.add(frameIcon);
             } catch (Exception e) {
                 System.out.println("Cannot load frame: " + framePath);
@@ -63,14 +82,19 @@ public class GameWindow {
                 super.paintComponent(g);
              
                 try {
-                    Image hudBackground = ImageIO.read(new File("assets/ui/TitlePanel01.png"));
+                    Image hudBackground = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + File.separator + "assets" + File.separator + "ui" + File.separator + "TitlePanel01.png");
+                    MediaTracker tracker = new MediaTracker(this);
+                    tracker.addImage(hudBackground, 0);
+                    tracker.waitForAll();
+                    
                     int hudHeight = 60;
                     int hudY = Config.WINDOW_HEIGHT - hudHeight ; 
                     int hudX = 0; 
                     g.drawImage(hudBackground, hudX, hudY, 
                                Config.WINDOW_WIDTH, hudHeight, this);
-                } catch (IOException e) {
-                 
+                } catch (Exception e) {
+                    g.setColor(new Color(0, 0, 0, 150));
+                    g.fillRect(0, Config.WINDOW_HEIGHT - 60, Config.WINDOW_WIDTH, 60);
                 }
             }
         };
@@ -181,9 +205,10 @@ public class GameWindow {
 
     private void updateSoundButtonIcon() {
         try {
-            String iconPath = SoundManager.isSoundEnabled() ? 
-                "assets/ui/Music_On.png" : "assets/ui/Music_Off.png";
-            ImageIcon icon = new ImageIcon(iconPath);
+            String iconPath = System.getProperty("user.dir") + File.separator + "assets" + File.separator + "ui" + File.separator + 
+                (SoundManager.isSoundEnabled() ? "Music_On.png" : "Music_Off.png");
+            Image iconImage = Toolkit.getDefaultToolkit().createImage(iconPath);
+            ImageIcon icon = new ImageIcon(iconImage);
             soundToggleButton.setIcon(icon);
         } catch (Exception e) {
         }
@@ -196,7 +221,8 @@ public class GameWindow {
         
         JLabel emoteLabel = new JLabel();
         try {
-            ImageIcon emoteIcon = new ImageIcon("assets/images/emote.gif");
+            Image emoteImage = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + File.separator + "assets" + File.separator + "images" + File.separator + "emote.gif");
+            ImageIcon emoteIcon = new ImageIcon(emoteImage);
             emoteLabel.setIcon(emoteIcon);
         } catch (Exception e) {
         }
@@ -218,7 +244,8 @@ public class GameWindow {
         playButton.setBorderPainted(false);
         playButton.setFocusPainted(false);
         try {
-            ImageIcon buttonIcon = new ImageIcon("assets/ui/Button08.png");
+            Image buttonImage = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + File.separator + "assets" + File.separator + "ui" + File.separator + "Button08.png");
+            ImageIcon buttonIcon = new ImageIcon(buttonImage);
             playButton.setIcon(buttonIcon);
         } catch (Exception e) {
         }

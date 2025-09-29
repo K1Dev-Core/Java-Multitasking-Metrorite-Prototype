@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import javax.swing.*;
 
 public class Asteroid implements Runnable {
@@ -25,11 +26,13 @@ public class Asteroid implements Runnable {
         this.parent = parent;
 
         int img = (int)(Math.random() * 13) + 1;
-        String path = "assets/images/" + img + ".gif";
-        String bombPath = "assets/images/output-onlinegiftools.gif";
+        String path = System.getProperty("user.dir") + File.separator + "assets" + File.separator + "images" + File.separator + img + ".gif";
+        String bombPath = System.getProperty("user.dir") + File.separator + "assets" + File.separator + "images" + File.separator + "output-onlinegiftools.gif";
 
-        icon = new ImageIcon(path);
-        bomb = new ImageIcon(bombPath);
+        Image iconImage = Toolkit.getDefaultToolkit().createImage(path);
+        Image bombImage = Toolkit.getDefaultToolkit().createImage(bombPath);
+        icon = new ImageIcon(iconImage);
+        bomb = new ImageIcon(bombImage);
     
 
 

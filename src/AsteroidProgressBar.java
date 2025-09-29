@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class AsteroidProgressBar extends JComponent {
@@ -11,11 +10,55 @@ public class AsteroidProgressBar extends JComponent {
 
     public AsteroidProgressBar() {
         try {
-            barBg = ImageIO.read(new File("assets/ui/BarV7_Bar.png"));
-            barFill = ImageIO.read(new File("assets/ui/BarV7_ProgressBar.png"));
-            barBorder = ImageIO.read(new File("assets/ui/BarV7_ProgressBarBorder.png"));
+            Image barBgImage = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + File.separator + "assets" + File.separator + "ui" + File.separator + "BarV7_Bar.png");
+            Image barFillImage = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + File.separator + "assets" + File.separator + "ui" + File.separator + "BarV7_ProgressBar.png");
+            Image barBorderImage = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + File.separator + "assets" + File.separator + "ui" + File.separator + "BarV7_ProgressBarBorder.png");
+            
+            MediaTracker tracker = new MediaTracker(this);
+            tracker.addImage(barBgImage, 0);
+            tracker.addImage(barFillImage, 1);
+            tracker.addImage(barBorderImage, 2);
+            
+            try {
+                tracker.waitForAll();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            
+            barBg = new BufferedImage(barBgImage.getWidth(null), barBgImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+            barFill = new BufferedImage(barFillImage.getWidth(null), barFillImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+            barBorder = new BufferedImage(barBorderImage.getWidth(null), barBorderImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+            
+            Graphics2D g2d = barBg.createGraphics();
+            g2d.drawImage(barBgImage, 0, 0, null);
+            g2d.dispose();
+            
+            g2d = barFill.createGraphics();
+            g2d.drawImage(barFillImage, 0, 0, null);
+            g2d.dispose();
+            
+            g2d = barBorder.createGraphics();
+            g2d.drawImage(barBorderImage, 0, 0, null);
+            g2d.dispose();
         } catch (Exception e) {
-            e.printStackTrace();
+            barBg = new BufferedImage(300, 50, BufferedImage.TYPE_INT_ARGB);
+            barFill = new BufferedImage(300, 50, BufferedImage.TYPE_INT_ARGB);
+            barBorder = new BufferedImage(300, 50, BufferedImage.TYPE_INT_ARGB);
+            
+            Graphics2D g2d = barBg.createGraphics();
+            g2d.setColor(Color.DARK_GRAY);
+            g2d.fillRect(0, 0, 300, 50);
+            g2d.dispose();
+            
+            g2d = barFill.createGraphics();
+            g2d.setColor(Color.GREEN);
+            g2d.fillRect(0, 0, 300, 50);
+            g2d.dispose();
+            
+            g2d = barBorder.createGraphics();
+            g2d.setColor(Color.WHITE);
+            g2d.drawRect(0, 0, 299, 49);
+            g2d.dispose();
         }
         setPreferredSize(new Dimension(300, 50));
         setOpaque(false);
@@ -40,17 +83,23 @@ public class AsteroidProgressBar extends JComponent {
         int width = getWidth();
         int height = getHeight();
         
-        g.drawImage(barBg, 0, 0, width, height, null);
+        if (barBg != null) {
+            g.drawImage(barBg, 0, 0, width, height, null);
+        }
 
         double percent = asteroidCount / (double) maxAsteroids;
         int fillWidth = (int) (width * percent);
 
-        g.drawImage(barFill,
-                0, 0, fillWidth, height,
-                0, 0, barFill.getWidth(), barFill.getHeight(),
-                null);
+        if (barFill != null) {
+            g.drawImage(barFill,
+                    0, 0, fillWidth, height,
+                    0, 0, barFill.getWidth(), barFill.getHeight(),
+                    null);
+        }
 
-        g.drawImage(barBorder, 0, 0, width, height, null);
+        if (barBorder != null) {
+            g.drawImage(barBorder, 0, 0, width, height, null);
+        }
 
         g.setColor(Color.WHITE);
         g.setFont(new Font("Tahoma", Font.BOLD, 16));

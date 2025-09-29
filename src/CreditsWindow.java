@@ -1,7 +1,5 @@
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class CreditsWindow {
@@ -90,10 +88,11 @@ public class CreditsWindow {
 
         ImageIcon personIcon = null;
         try {
-            Image originalImage = ImageIO.read(new File(imagePath));
+            String fullPath = System.getProperty("user.dir") + File.separator + imagePath;
+            Image originalImage = Toolkit.getDefaultToolkit().createImage(fullPath);
             Image resizedImage = originalImage.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
             personIcon = new ImageIcon(resizedImage);
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Cannot load image: " + imagePath);
             personIcon = new ImageIcon();
         }

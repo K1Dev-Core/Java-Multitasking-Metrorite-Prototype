@@ -27,7 +27,7 @@ public class App {
 
 
 
-    static void start(JPanel panel, AsteroidProgressBar asteroidProgressBar, GameWindow window) {
+    public static void start(JPanel panel, AsteroidProgressBar asteroidProgressBar, GameWindow window) {
         App.panel = panel;
         App.asteroidProgressBar = asteroidProgressBar;
         App.window = window;
@@ -88,18 +88,16 @@ public class App {
         gameThread = new Thread(() -> {
             while (true) {
                 try {
-                    SwingUtilities.invokeLater(() -> {
-                        asteroidProgressBar.setAsteroidCount(asteroids.size());
-                        asteroids.removeIf(asteroid -> !asteroid.isAlive());
-                        if (window != null && window.isDebugMode() && System.currentTimeMillis() % 200 < 50) {
-                            window.updateDebugInfo();
-                        }
-                        
-                        if (autoSpawn && asteroids.size() < count && System.currentTimeMillis() - lastSpawnTime > 2000) {
-                            spawnAsteroid();
-                            lastSpawnTime = System.currentTimeMillis();
-                        }
-                    });
+                    asteroidProgressBar.setAsteroidCount(asteroids.size());
+                    asteroids.removeIf(asteroid -> !asteroid.isAlive());
+                    if (window != null && window.isDebugMode() && System.currentTimeMillis() % 200 < 50) {
+                        window.updateDebugInfo();
+                    }
+                    
+                    if (autoSpawn && asteroids.size() < count && System.currentTimeMillis() - lastSpawnTime > 2000) {
+                        spawnAsteroid();
+                        lastSpawnTime = System.currentTimeMillis();
+                    }
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
                     break;
@@ -110,28 +108,6 @@ public class App {
         gameThread.start();
     }
 
-    public static void stopGame() {
-        if (gameThread != null) {
-            gameThread.interrupt();
-            gameThread = null;
-        }
-        
-        for (Asteroid asteroid : asteroids) {
-            asteroid.stop();
-        }
-        asteroids.clear();
-        
-        if (panel != null) {
-            SwingUtilities.invokeLater(() -> {
-                panel.removeAll();
-                if (window != null) {
-                    panel.add(window.getAsteroidProgressBar());
-                }
-                panel.revalidate();
-                panel.repaint();
-            });
-        }
-    }
 
     public static void clearAndRestart(int newCount, JPanel panel, AsteroidProgressBar asteroidProgressBar, GameWindow window) {
         App.panel = panel;
@@ -144,15 +120,13 @@ public class App {
             }
             
             if (panel != null) {
-                SwingUtilities.invokeLater(() -> {
-                    for (Asteroid asteroid : asteroids) {
-                        if (asteroid.getLabel() != null) {
-                            panel.remove(asteroid.getLabel());
-                        }
+                for (Asteroid asteroid : asteroids) {
+                    if (asteroid.getLabel() != null) {
+                        panel.remove(asteroid.getLabel());
                     }
-                    panel.revalidate();
-                    panel.repaint();
-                });
+                }
+                panel.revalidate();
+                panel.repaint();
             }
             
             try {
@@ -189,13 +163,9 @@ public class App {
                 t.setDaemon(true);
                 t.start();
             }
-            
-            if (panel != null) {
-                SwingUtilities.invokeLater(() -> {
-                    panel.revalidate();
-                    panel.repaint();
-                });
-            }
+
+            panel.revalidate();
+            panel.repaint();
         });
         cleanupThread.setDaemon(true);
         cleanupThread.start();
