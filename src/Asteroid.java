@@ -5,17 +5,16 @@ import javax.swing.*;
 
 public class Asteroid implements Runnable {
 
-    private int id;
+    private final int id;
     private int x, y;
     private int dx, dy;
     private boolean alive = true;
     private boolean exploded = false;
-    private boolean justBounced = false;
-    private JLabel label;
-    private JPanel parent;
-    private ImageIcon icon;
-    private ImageIcon bomb;
-    private JLabel debug;
+    private final JLabel label;
+    private final JPanel parent;
+    private final ImageIcon icon;
+    private final ImageIcon bomb;
+    private final JLabel debug;
 
     public Asteroid(int id, int x, int y, int dx, int dy, JPanel parent) {
         this.id = id;
@@ -27,7 +26,7 @@ public class Asteroid implements Runnable {
 
         int img = (int)(Math.random() * 13) + 1;
         String path = "assets/images/" + img + ".gif";
-        String bombPath = "assets/images/cLqM0j.gif";
+        String bombPath = "assets/images/output-onlinegiftools.gif";
 
         icon = new ImageIcon(path);
         bomb = new ImageIcon(bombPath);
@@ -94,6 +93,10 @@ public class Asteroid implements Runnable {
         return alive;
     }
 
+    public void stop() {
+        alive = false;
+    }
+
 
 
     public void updateDebugInfo(boolean debugMode) {
@@ -112,11 +115,9 @@ public class Asteroid implements Runnable {
     @Override
     public void run() {
         while (alive && !exploded) {
-            // เคลื่อนที่อุกกาบาตตามความเร็ว
             x += dx;
             y += dy;
 
-            // จำกัดความเร็วสูงสุด
             if (Math.abs(dx) > Config.MAX_SPEED) {
                 dx = dx > 0 ? Config.MAX_SPEED : -Config.MAX_SPEED;
             }
@@ -124,42 +125,28 @@ public class Asteroid implements Runnable {
                 dy = dy > 0 ? Config.MAX_SPEED : -Config.MAX_SPEED;
             }
 
-            // ชนขอบซ้าย
             if (x <= 0) {
                 dx = (int)(Math.abs(dx) * Config.BOUNCE_MULTIPLIER);
                 x = 0;
                 SoundManager.playDrip();
-                justBounced = true;
             }
 
-            // ชนขอบขวา
             if (x >= Config.WINDOW_WIDTH - Config.ASTEROID_SIZE) {
                 dx = -(int)(Math.abs(dx) * Config.BOUNCE_MULTIPLIER);
                 x = Config.WINDOW_WIDTH - Config.ASTEROID_SIZE;
                 SoundManager.playDrip();
-                justBounced = true;
             }
 
-            // ชนขอบบน
             if (y <= 0) {
                 dy = (int)(Math.abs(dy) * Config.BOUNCE_MULTIPLIER);
                 y = 0;
                 SoundManager.playDrip();
-                justBounced = true;
             }
 
-            // ชนขอบล่าง
-            if (y >= Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 30) {
+            if (y >= Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 60) {
                 dy = -(int)(Math.abs(dy) * Config.BOUNCE_MULTIPLIER);
-                y = Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 30;
+                y = Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 60;
                 SoundManager.playDrip();
-                justBounced = true;
-            }
-
-       
-            if (x > 10 && x < Config.WINDOW_WIDTH - Config.ASTEROID_SIZE - 10 && 
-                y > 10 && y < Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 40) {
-                justBounced = false;
             }
 
             SwingUtilities.invokeLater(() -> {
@@ -178,21 +165,20 @@ public class Asteroid implements Runnable {
         }
     }
 
-    // ตรวจสอบการชนกันระหว่างอุกกาบาต
     private void checkCollision() {
         for (Asteroid other : App.getAsteroids()) {
             if (other == this || !other.isAlive() || !this.isAlive() || this.exploded || other.exploded) {
                 continue;
             }
 
-            int dx = this.x - other.x;
-            int dy = this.y - other.y;
-            int distanceSquared = dx * dx + dy * dy;
+            int deltaX = this.x - other.x;
+            int deltaY = this.y - other.y;
+            int distanceSquared = deltaX * deltaX + deltaY * deltaY;
 
             if (distanceSquared < Config.COLLISION_DISTANCE * Config.COLLISION_DISTANCE) {
                
                 if (!this.exploded && !other.exploded) {
-                    if (Math.random() < 0.5) {
+                    if (this.id < other.id) {
                         this.explode();
                     } else {
                         other.explode();

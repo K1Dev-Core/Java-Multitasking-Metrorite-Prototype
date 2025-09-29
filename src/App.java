@@ -37,8 +37,10 @@ public class App {
         Random r = new Random();
 
         for (int i = 0; i < count; i++) {
-            int x = r.nextInt(Config.WINDOW_WIDTH - Config.ASTEROID_SIZE - 200) + 100;
-            int y = r.nextInt(Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 200) + 100;
+            int marginX = 111;
+            int marginY = 120;
+            int x = r.nextInt(Config.WINDOW_WIDTH - Config.ASTEROID_SIZE - marginX * 2) + marginX;
+            int y = r.nextInt(Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - marginY * 2) + marginY;
 
             int dx = r.nextInt(7) - 3;
             int dy = r.nextInt(7) - 3;
@@ -50,7 +52,9 @@ public class App {
 
             Asteroid a = new Asteroid(i, x, y, dx, dy, panel);
             asteroids.add(a);
-            panel.add(a.getLabel());
+            if (panel != null) {
+                panel.add(a.getLabel());
+            }
 
             Thread t = new Thread(a, "Asteroid-" + i);
             t.setDaemon(true);
@@ -104,5 +108,100 @@ public class App {
         }, "GameLoop");
         gameThread.setDaemon(true);
         gameThread.start();
+    }
+
+    public static void stopGame() {
+        if (gameThread != null) {
+            gameThread.interrupt();
+            gameThread = null;
+        }
+        
+        for (Asteroid asteroid : asteroids) {
+            asteroid.stop();
+        }
+        asteroids.clear();
+        
+        if (panel != null) {
+            SwingUtilities.invokeLater(() -> {
+                panel.removeAll();
+                if (window != null) {
+                    panel.add(window.getAsteroidProgressBar());
+                }
+                panel.revalidate();
+                panel.repaint();
+            });
+        }
+    }
+
+    public static void clearAndRestart(int newCount, JPanel panel, AsteroidProgressBar asteroidProgressBar, GameWindow window) {
+        App.panel = panel;
+        App.asteroidProgressBar = asteroidProgressBar;
+        App.window = window;
+        
+        Thread cleanupThread = new Thread(() -> {
+            for (Asteroid asteroid : asteroids) {
+                asteroid.stop();
+            }
+            
+            if (panel != null) {
+                SwingUtilities.invokeLater(() -> {
+                    for (Asteroid asteroid : asteroids) {
+                        if (asteroid.getLabel() != null) {
+                            panel.remove(asteroid.getLabel());
+                        }
+                    }
+                    panel.revalidate();
+                    panel.repaint();
+                });
+            }
+            
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            
+            asteroids.clear();
+            count = newCount;
+            asteroidProgressBar.setMaxAsteroids(count);
+
+            Random r = new Random();
+
+            for (int i = 0; i < count; i++) {
+                int x = r.nextInt(Config.WINDOW_WIDTH - Config.ASTEROID_SIZE - 200) + 100;
+                int y = r.nextInt(Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 200) + 100;
+
+                int dx = r.nextInt(7) - 3;
+                int dy = r.nextInt(7) - 3;
+
+                if (dx == 0)
+                    dx = 1;
+                if (dy == 0)
+                    dy = 1;
+
+                Asteroid a = new Asteroid(i, x, y, dx, dy, panel);
+                asteroids.add(a);
+                if (panel != null) {
+                    panel.add(a.getLabel());
+                }
+
+                Thread t = new Thread(a, "Asteroid-" + i);
+                t.setDaemon(true);
+                t.start();
+            }
+            
+            if (panel != null) {
+                SwingUtilities.invokeLater(() -> {
+                    panel.revalidate();
+                    panel.repaint();
+                });
+            }
+        });
+        cleanupThread.setDaemon(true);
+        cleanupThread.start();
+
+        if (gameThread == null) {
+            startGameLoop();
+        }
     }
 }

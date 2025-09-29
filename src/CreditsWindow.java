@@ -1,11 +1,11 @@
 import java.awt.*;
-import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 public class CreditsWindow {
-    private JFrame frame;
+    private final JFrame frame;
 
     public CreditsWindow() {
         frame = new JFrame("Credits - Asteroid Game");
@@ -48,22 +48,37 @@ public class CreditsWindow {
 
         mainPanel.add(creditsPanel, BorderLayout.CENTER);
 
-        JLabel closeLabel = new JLabel("Press ESC to close", JLabel.CENTER);
-        closeLabel.setForeground(Color.GRAY);
-        closeLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        closeLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-        mainPanel.add(closeLabel, BorderLayout.SOUTH);
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+        buttonPanel.setBackground(Color.BLACK);
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.setFont(new Font("Arial", Font.BOLD, 14));
+        exitButton.setPreferredSize(new Dimension(100, 35));
+        exitButton.setOpaque(false);
+        exitButton.setContentAreaFilled(false);
+        exitButton.setBorderPainted(true);
+        exitButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        exitButton.setForeground(Color.WHITE);
+        exitButton.addActionListener(_ -> System.exit(0));
+
+        JButton continueButton = new JButton("Continue");
+        continueButton.setFont(new Font("Arial", Font.BOLD, 14));
+        continueButton.setPreferredSize(new Dimension(100, 35));
+        continueButton.setOpaque(false);
+        continueButton.setContentAreaFilled(false);
+        continueButton.setBorderPainted(true);
+        continueButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        continueButton.setForeground(Color.WHITE);
+        continueButton.addActionListener(_ -> frame.setVisible(false));
+
+        buttonPanel.add(exitButton);
+        buttonPanel.add(continueButton);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         frame.add(mainPanel);
 
-        frame.addKeyListener(new java.awt.event.KeyAdapter() {
-            @Override
-            public void keyPressed(java.awt.event.KeyEvent e) {
-                if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE) {
-                    frame.setVisible(false);
-                }
-            }
-        });
         frame.setFocusable(true);
     }
 

@@ -19,12 +19,15 @@ public class GameWindow {
     private List<ImageIcon> backgroundFrames;
     private int currentFrameIndex = 0;
     private Timer backgroundTimer;
-    private DraggablePlayer draggablePlayer;
+    private JTextField asteroidCountField;
+    private JButton playButton;
+    private boolean gameRunning = false;
 
     public GameWindow() {
         frame = new JFrame("Asteroid Game ");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
+        frame.setUndecorated(true);
         
         try {
             Image cursorImage = ImageIO.read(new File("assets/images/hand_thin_small_point.png"));
@@ -34,7 +37,6 @@ public class GameWindow {
         }
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
-
         frame.setFocusable(true);
 
         setupUI();
@@ -55,7 +57,23 @@ public class GameWindow {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
-        panel = new JPanel();
+        panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+             
+                try {
+                    Image hudBackground = ImageIO.read(new File("assets/ui/TitlePanel01.png"));
+                    int hudHeight = 60;
+                    int hudY = Config.WINDOW_HEIGHT - hudHeight ; 
+                    int hudX = 0; 
+                    g.drawImage(hudBackground, hudX, hudY, 
+                               Config.WINDOW_WIDTH, hudHeight, this);
+                } catch (IOException e) {
+                 
+                }
+            }
+        };
         panel.setLayout(null);
         panel.setOpaque(false);
         panel.setFocusable(true);
@@ -68,7 +86,7 @@ public class GameWindow {
                     updateDebugInfo();
                 } else if (e.getKeyCode() == KeyEvent.VK_A && debugMode) {
                     App.toggleAutoSpawn();
-                } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                } else if (e.getKeyCode() == KeyEvent.VK_TAB) {
                     if (credits == null) {
                         credits = new CreditsWindow();
                     }
@@ -88,7 +106,7 @@ public class GameWindow {
         backgroundLabel.add(panel, BorderLayout.CENTER);
         mainPanel.add(backgroundLabel, BorderLayout.CENTER);
 
-        backgroundTimer = new Timer(80, e -> {
+        backgroundTimer = new Timer(80, _ -> {
             if (!backgroundFrames.isEmpty()) {
                 currentFrameIndex = (currentFrameIndex + 1) % backgroundFrames.size();
                 backgroundLabel.setIcon(backgroundFrames.get(currentFrameIndex));
@@ -115,20 +133,19 @@ public class GameWindow {
         soundToggleButton.setBorderPainted(false);
         soundToggleButton.setFocusPainted(false);
         updateSoundButtonIcon();
-        soundToggleButton.addActionListener(e -> {
+        soundToggleButton.addActionListener(_ -> {
             SoundManager.toggleSound();
             updateSoundButtonIcon();
-            panel.requestFocus();
+            frame.requestFocus();
         });
         panel.add(soundToggleButton);
 
-        draggablePlayer = new DraggablePlayer();
-        panel.add(draggablePlayer);
-        panel.add(draggablePlayer.getEmoteLabel());
+        setupControlPanel();
+
 
         frame.add(mainPanel);
         frame.setVisible(true);
-        panel.requestFocus();
+        frame.requestFocus();
     }
 
     public JPanel getAsteroidPanel() {
@@ -139,9 +156,6 @@ public class GameWindow {
         return asteroidProgressBar;
     }
 
-    public DraggablePlayer getDraggablePlayer() {
-        return draggablePlayer;
-    }
 
 
     public boolean isDebugMode() {
@@ -173,5 +187,77 @@ public class GameWindow {
             soundToggleButton.setIcon(icon);
         } catch (Exception e) {
         }
+    }
+
+    private void setupControlPanel() {
+   
+        int hudY = Config.WINDOW_HEIGHT - 60; 
+        int hudX = 150;
+        
+        JLabel emoteLabel = new JLabel();
+        try {
+            ImageIcon emoteIcon = new ImageIcon("assets/images/emote.gif");
+            emoteLabel.setIcon(emoteIcon);
+        } catch (Exception e) {
+        }
+        emoteLabel.setBounds(hudX + 20, hudY + 10, 30, 30);
+        panel.add(emoteLabel);
+
+        asteroidCountField = new JTextField("12", 3);
+        asteroidCountField.setHorizontalAlignment(JTextField.CENTER);
+        asteroidCountField.setFont(new Font("Tahoma", Font.BOLD, 12));
+        asteroidCountField.setForeground(Color.WHITE);
+        asteroidCountField.setOpaque(false);
+        asteroidCountField.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        asteroidCountField.setBounds(hudX + 90, hudY + 15, 90, 20);
+        panel.add(asteroidCountField);
+
+        playButton = new JButton();
+        playButton.setOpaque(false);
+        playButton.setContentAreaFilled(false);
+        playButton.setBorderPainted(false);
+        playButton.setFocusPainted(false);
+        try {
+            ImageIcon buttonIcon = new ImageIcon("assets/ui/Button08.png");
+            playButton.setIcon(buttonIcon);
+        } catch (Exception e) {
+        }
+        playButton.setBounds(hudX + 190, hudY + 15, 70, 30);
+        playButton.addActionListener(_ -> {
+            if (!gameRunning) {
+                startGame();
+            }
+            frame.requestFocus();
+        });
+        panel.add(playButton);
+    }
+
+    private void startGame() {
+        try {
+            int count = Integer.parseInt(asteroidCountField.getText());
+            if (count < 1) count = 1;
+
+            debugMode = false;
+            debug.setVisible(debugMode);
+            updateDebugInfo();
+            debug.setText("");
+            App.clearAndRestart(count, panel, asteroidProgressBar, this);
+            gameRunning = true;
+            
+            new Thread(() -> {
+                try {
+                    Thread.sleep(2000);
+                    gameRunning = false;
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }).start();
+        } catch (NumberFormatException e) {
+            asteroidCountField.setText("10");
+        }
+    }
+
+    public boolean isGameRunning() {
+        return gameRunning;
     }
 }
