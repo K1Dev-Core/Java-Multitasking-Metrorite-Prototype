@@ -12,7 +12,13 @@ public class CreditsWindow {
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setUndecorated(true);
-
+        try {
+            Image cursorImage = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + File.separator
+                    + "assets" + File.separator + "images" + File.separator + "hand_thin_small_point.png");
+            Cursor customCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImage, new Point(0, 0), "hand");
+            frame.setCursor(customCursor);
+        } catch (Exception e) {
+        }
         setupCreditsUI();
     }
 

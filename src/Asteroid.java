@@ -155,6 +155,7 @@ public class Asteroid implements Runnable {
                 debug.setBounds(x - 10, y - 20, 250, 15);
             }
             checkCollision();
+            System.out.println("debug getCreatingAsteroids : "+GameWindow.getCreatingAsteroids());
 
             try {
                 Thread.sleep(Config.GAME_SPEED);

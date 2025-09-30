@@ -20,7 +20,7 @@ public class GameWindow {
     private JTextField asteroidCountField;
     private JButton playButton;
     private boolean gameRunning = false;
-    private boolean creatingAsteroids = false;
+    public static boolean creatingAsteroids = false;
 
     public GameWindow() {
         frame = new JFrame("Asteroid Game ");
@@ -186,6 +186,7 @@ public class GameWindow {
     public boolean isDebugMode() {
         return debugMode;
     }
+    public static boolean getCreatingAsteroids() {return creatingAsteroids;}
 
     public void updateDebugInfo() {
         for (Asteroid asteroid : App.getAsteroids()) {
