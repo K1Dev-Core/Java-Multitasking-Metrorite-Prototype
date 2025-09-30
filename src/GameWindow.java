@@ -20,15 +20,17 @@ public class GameWindow {
     private JTextField asteroidCountField;
     private JButton playButton;
     private boolean gameRunning = false;
+    private boolean creatingAsteroids = false;
 
     public GameWindow() {
         frame = new JFrame("Asteroid Game ");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
         frame.setUndecorated(true);
-        
+
         try {
-            Image cursorImage = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + File.separator + "assets" + File.separator + "images" + File.separator + "hand_thin_small_point.png");
+            Image cursorImage = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + File.separator
+                    + "assets" + File.separator + "images" + File.separator + "hand_thin_small_point.png");
             Cursor customCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImage, new Point(0, 0), "hand");
             frame.setCursor(customCursor);
         } catch (Exception e) {
@@ -63,7 +65,8 @@ public class GameWindow {
     private void setupUI() {
         backgroundFrames = new ArrayList<>();
         for (int i = 0; i < 60; i++) {
-            String framePath = System.getProperty("user.dir") + File.separator + "assets" + File.separator + "background" + File.separator + "frame" + File.separator + String.format("frame_%03d.png", i);
+            String framePath = System.getProperty("user.dir") + File.separator + "assets" + File.separator
+                    + "background" + File.separator + "frame" + File.separator + String.format("frame_%03d.png", i);
             try {
                 Image frameImage = Toolkit.getDefaultToolkit().createImage(framePath);
                 ImageIcon frameIcon = new ImageIcon(frameImage);
@@ -80,18 +83,19 @@ public class GameWindow {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-             
+
                 try {
-                    Image hudBackground = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + File.separator + "assets" + File.separator + "ui" + File.separator + "TitlePanel01.png");
+                    Image hudBackground = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir")
+                            + File.separator + "assets" + File.separator + "ui" + File.separator + "TitlePanel01.png");
                     MediaTracker tracker = new MediaTracker(this);
                     tracker.addImage(hudBackground, 0);
                     tracker.waitForAll();
-                    
+
                     int hudHeight = 60;
-                    int hudY = Config.WINDOW_HEIGHT - hudHeight ; 
-                    int hudX = 0; 
-                    g.drawImage(hudBackground, hudX, hudY, 
-                               Config.WINDOW_WIDTH, hudHeight, this);
+                    int hudY = Config.WINDOW_HEIGHT - hudHeight;
+                    int hudX = 0;
+                    g.drawImage(hudBackground, hudX, hudY,
+                            Config.WINDOW_WIDTH, hudHeight, this);
                 } catch (Exception e) {
                     g.setColor(new Color(0, 0, 0, 150));
                     g.fillRect(0, Config.WINDOW_HEIGHT - 60, Config.WINDOW_WIDTH, 60);
@@ -166,7 +170,6 @@ public class GameWindow {
 
         setupControlPanel();
 
-
         frame.add(mainPanel);
         frame.setVisible(true);
         frame.requestFocus();
@@ -179,8 +182,6 @@ public class GameWindow {
     public AsteroidProgressBar getAsteroidProgressBar() {
         return asteroidProgressBar;
     }
-
-
 
     public boolean isDebugMode() {
         return debugMode;
@@ -205,8 +206,9 @@ public class GameWindow {
 
     private void updateSoundButtonIcon() {
         try {
-            String iconPath = System.getProperty("user.dir") + File.separator + "assets" + File.separator + "ui" + File.separator + 
-                (SoundManager.isSoundEnabled() ? "Music_On.png" : "Music_Off.png");
+            String iconPath = System.getProperty("user.dir") + File.separator + "assets" + File.separator + "ui"
+                    + File.separator +
+                    (SoundManager.isSoundEnabled() ? "Music_On.png" : "Music_Off.png");
             Image iconImage = Toolkit.getDefaultToolkit().createImage(iconPath);
             ImageIcon icon = new ImageIcon(iconImage);
             soundToggleButton.setIcon(icon);
@@ -215,13 +217,14 @@ public class GameWindow {
     }
 
     private void setupControlPanel() {
-   
-        int hudY = Config.WINDOW_HEIGHT - 60; 
+
+        int hudY = Config.WINDOW_HEIGHT - 60;
         int hudX = 150;
-        
+
         JLabel emoteLabel = new JLabel();
         try {
-            Image emoteImage = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + File.separator + "assets" + File.separator + "images" + File.separator + "emote.gif");
+            Image emoteImage = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + File.separator
+                    + "assets" + File.separator + "images" + File.separator + "emote.gif");
             ImageIcon emoteIcon = new ImageIcon(emoteImage);
             emoteLabel.setIcon(emoteIcon);
         } catch (Exception e) {
@@ -244,14 +247,15 @@ public class GameWindow {
         playButton.setBorderPainted(false);
         playButton.setFocusPainted(false);
         try {
-            Image buttonImage = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + File.separator + "assets" + File.separator + "ui" + File.separator + "Button08.png");
+            Image buttonImage = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir") + File.separator
+                    + "assets" + File.separator + "ui" + File.separator + "Button08.png");
             ImageIcon buttonIcon = new ImageIcon(buttonImage);
             playButton.setIcon(buttonIcon);
         } catch (Exception e) {
         }
         playButton.setBounds(hudX + 190, hudY + 15, 70, 30);
         playButton.addActionListener(_ -> {
-            if (!gameRunning) {
+            if (!gameRunning && !creatingAsteroids) {
                 startGame();
             }
             frame.requestFocus();
@@ -262,15 +266,21 @@ public class GameWindow {
     private void startGame() {
         try {
             int count = Integer.parseInt(asteroidCountField.getText());
-            if (count < 1) count = 1;
+            if (count < 1)
+                count = 1;
 
             debugMode = false;
             debug.setVisible(debugMode);
             updateDebugInfo();
             debug.setText("");
-            App.clearAndRestart(count, panel, asteroidProgressBar, this);
+
+            creatingAsteroids = true;
             gameRunning = true;
-            
+
+            App.clearAndRestart(count, panel, asteroidProgressBar, this, () -> {
+                creatingAsteroids = false;
+            });
+
             new Thread(() -> {
                 try {
                     Thread.sleep(2000);

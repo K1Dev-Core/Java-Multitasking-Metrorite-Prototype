@@ -25,13 +25,11 @@ public class App {
         autoSpawn = !autoSpawn;
     }
 
-
-
     public static void start(JPanel panel, AsteroidProgressBar asteroidProgressBar, GameWindow window) {
         App.panel = panel;
         App.asteroidProgressBar = asteroidProgressBar;
         App.window = window;
-        
+
         asteroidProgressBar.setMaxAsteroids(count);
 
         Random r = new Random();
@@ -68,17 +66,19 @@ public class App {
         Random r = new Random();
         int x = r.nextInt(Config.WINDOW_WIDTH - Config.ASTEROID_SIZE - 200) + 100;
         int y = r.nextInt(Config.WINDOW_HEIGHT - Config.ASTEROID_SIZE - 200) + 100;
-        
+
         int dx = r.nextInt(10) - 5;
         int dy = r.nextInt(10) - 5;
-        
-        if (dx == 0) dx = 1;
-        if (dy == 0) dy = 1;
-        
+
+        if (dx == 0)
+            dx = 1;
+        if (dy == 0)
+            dy = 1;
+
         Asteroid a = new Asteroid(asteroids.size(), x, y, dx, dy, panel);
         asteroids.add(a);
         panel.add(a.getLabel());
-        
+
         Thread t = new Thread(a, "Asteroid-" + asteroids.size());
         t.setDaemon(true);
         t.start();
@@ -93,7 +93,7 @@ public class App {
                     if (window != null && window.isDebugMode() && System.currentTimeMillis() % 200 < 50) {
                         window.updateDebugInfo();
                     }
-                    
+
                     if (autoSpawn && asteroids.size() < count && System.currentTimeMillis() - lastSpawnTime > 2000) {
                         spawnAsteroid();
                         lastSpawnTime = System.currentTimeMillis();
@@ -108,17 +108,17 @@ public class App {
         gameThread.start();
     }
 
-
-    public static void clearAndRestart(int newCount, JPanel panel, AsteroidProgressBar asteroidProgressBar, GameWindow window) {
+    public static void clearAndRestart(int newCount, JPanel panel, AsteroidProgressBar asteroidProgressBar,
+            GameWindow window, Runnable onComplete) {
         App.panel = panel;
         App.asteroidProgressBar = asteroidProgressBar;
         App.window = window;
-        
+
         Thread cleanupThread = new Thread(() -> {
             for (Asteroid asteroid : asteroids) {
                 asteroid.stop();
             }
-            
+
             if (panel != null) {
                 for (Asteroid asteroid : asteroids) {
                     if (asteroid.getLabel() != null) {
@@ -128,13 +128,13 @@ public class App {
                 panel.revalidate();
                 panel.repaint();
             }
-            
+
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-            
+
             asteroids.clear();
             count = newCount;
             asteroidProgressBar.setMaxAsteroids(count);
@@ -166,6 +166,10 @@ public class App {
 
             panel.revalidate();
             panel.repaint();
+
+            if (onComplete != null) {
+                onComplete.run();
+            }
         });
         cleanupThread.setDaemon(true);
         cleanupThread.start();
@@ -173,5 +177,10 @@ public class App {
         if (gameThread == null) {
             startGameLoop();
         }
+    }
+
+    public static void clearAndRestart(int newCount, JPanel panel, AsteroidProgressBar asteroidProgressBar,
+            GameWindow window) {
+        clearAndRestart(newCount, panel, asteroidProgressBar, window, null);
     }
 }
